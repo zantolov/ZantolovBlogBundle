@@ -1,0 +1,49 @@
+{% extends 'ZantolovBlogBundle::baseAdmin.html.twig' %}
+
+    {% block body -%}
+        <h1>Category list</h1>
+
+        {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.category."} %}
+
+        <table class="table dataTable">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Parent</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for entity in entities %}
+                <tr>
+                    <td>
+                        <a href="{{ path('blog.admin.category.show', { 'id': entity.id }) }}">{{ entity.id }}</a>
+                    </td>
+                    <td>{{ entity.name }}</td>
+                    <td>{% if entity.parent %}{{ entity.parent.name }}{% endif %}</td>
+                    <td>{{ entity.active|fontAwesome() }}</td>
+                    <td>
+                        <ul class="list-inline">
+                            <li>
+                                <a class="btn btn-primary"
+                                   href="{{ path('blog.admin.category.show', { 'id': entity.id }) }}">
+                                    show
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary"
+                                   href="{{ path('blog.admin.category.edit', { 'id': entity.id }) }}">
+                                    edit
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.category."} %}
+    {% endblock %}

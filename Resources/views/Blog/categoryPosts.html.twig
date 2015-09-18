@@ -1,0 +1,17 @@
+{% extends "ZantolovBlogBundle::base.html.twig" %}
+
+{% block body %}
+
+    <h1>Category: {{ category.name }}</h1>
+
+    <ul class="list-unstyled">
+        {% for post in posts %}
+            {% include "ZantolovBlogBundle:Blog:partials/blogPostListItem.html.twig" with {post:post} %}
+        {% endfor %}
+    </ul>
+
+    <div class="navigation text-center">
+        {{ knp_pagination_render(posts) }}
+    </div>
+
+{% endblock %}

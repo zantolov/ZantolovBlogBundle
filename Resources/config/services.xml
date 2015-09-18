@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="zantolov_blog.category_repository" class="Zantolov\BlogBundle\Repository\CategoryRepository">
+            <factory service="doctrine" method="getRepository"/>
+            <argument>ZantolovBlogBundle:Category</argument>
+        </service>
+
+        <service id="zantolov_blog.post_type_factory" class="Zantolov\BlogBundle\Form\Factory\PostTypeFactory">
+            <argument type="service" id="zantolov_blog.category_repository"/>
+        </service>
+
+
+        <service id="zantolov_blog.sluggable_processor_eventlistener"
+                 class="Zantolov\BlogBundle\EventListener\SluggableProcessorEventListener">
+            <tag name="doctrine.event_listener" event="postPersist" method="postPersist"/>
+            <tag name="doctrine.event_listener" event="postUpdate" method="postPersist"/>
+            <tag name="doctrine.event_listener" event="postFlush" method="postFlush"/>
+        </service>
+
+
+    </services>
+
+</container>
