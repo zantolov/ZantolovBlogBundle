@@ -3,20 +3,23 @@
 namespace Zantolov\BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zantolov\AppBundle\Entity\Interfaces\SluggableInterface;
 use Zantolov\AppBundle\Entity\Traits\ActivableTrait;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Zantolov\AppBundle\Entity\Traits\SluggableTrait;
 
 /**
  * @ORM\Entity (repositoryClass="Zantolov\BlogBundle\Repository\CategoryRepository")
  * @ORM\Table(name="categories")
  * @ORM\HasLifecycleCallbacks
  */
-class Category
+class Category implements SluggableInterface
 {
     use SoftDeleteableEntity;
     use ActivableTrait;
     use TimestampableEntity;
+    use SluggableTrait;
 
     /**
      * @ORM\Id
@@ -42,6 +45,12 @@ class Category
      * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      */
     private $children;
+
+
+    public function getSluggableProperty()
+    {
+        return $this->getName();
+    }
 
 
     /**

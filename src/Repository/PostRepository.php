@@ -2,6 +2,7 @@
 
 namespace Zantolov\BlogBundle\Repository;
 
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityRepository;
 use Zantolov\BlogBundle\Entity\Category;
 use Zantolov\BlogBundle\Entity\Post;
@@ -13,15 +14,20 @@ class PostRepository extends EntityRepository
      * @param array $options
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getActivePostsQueryBuilder($options = array())
+    public function getActivePostsQueryBuilder($options = array('onlyPublished' => true))
     {
         $query = $this->getEntityManager()->getRepository(Post::class)
             ->createQueryBuilder('p')
             ->where('p.active = 1');
 
-        if (isset($options['sortByDate']) && $options['sortByDate'] === true) {
+
+        if (isset($options['publishedOnly']) && $options['publishedOnly'] === true) {
             $query->andWhere('p.publishedAt <= :now')
-                ->setParameter('now', new \DateTime('now'));
+                ->setParameter('now', new \DateTime('now'), \Doctrine\DBAL\Types\Type::DATETIME);
+        }
+
+        if (isset($options['sortByDate']) && $options['sortByDate'] === true) {
+            $query->orderBy('p.publishedAt', 'DESC');
         }
 
         return $query;
@@ -58,7 +64,7 @@ class PostRepository extends EntityRepository
      * @param array $options
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getPostsByCategoryQueryBuilder(Category $category, $options = array())
+    public function getPostsByCategoryQueryBuilder(Category $category, $options = array('sortByDate' => true, 'publishedOnly' => true))
     {
         $query = $this->getActivePostsQueryBuilder($options);
 
@@ -73,9 +79,26 @@ class PostRepository extends EntityRepository
      * @param array $options
      * @return array
      */
-    public function getPostsByCategory(Category $category, $options = array())
+    public function getPostsByCategory(Category $category, $options = array('sortByDate' => true, 'publishedOnly' => true))
     {
         $query = $this->getPostsByCategoryQueryBuilder($category, $options);
+        return $query->getQuery()->getResult();
+    }
+
+
+    /**
+     * @param $slug
+     * @return array
+     */
+    public function getPostBySlug($slug)
+    {
+        $query = $this->getEntityManager()->getRepository(Post::class)
+            ->createQueryBuilder('p')
+            ->where('p.active = 1')
+            ->andWhere('p.publishedAt <= :now')
+            ->setParameter('now', new \DateTime('now'))
+            ->setMaxResults(1);
+
         return $query->getQuery()->getResult();
     }
 

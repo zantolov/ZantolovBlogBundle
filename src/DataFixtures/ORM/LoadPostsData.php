@@ -21,6 +21,7 @@ class LoadPostsData extends AbstractDbFixture
             $p->setBody($faker->realText(500));
             $p->setIntro($faker->realText(200));
             $p->setKeywords(implode(', ', $faker->words()));
+            $p->setPublishedAt($faker->dateTimeBetween('-1 month', 'now'));
 
             $manager->persist($p);
         }

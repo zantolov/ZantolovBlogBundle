@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Zantolov\AppBundle\Entity\Interfaces\SluggableInterface;
 use Zantolov\AppBundle\Entity\Traits\ActivableTrait;
 use Zantolov\AppBundle\Entity\Traits\SluggableTrait;
+use Zantolov\MediaBundle\Entity\Traits\ImageableTrait;
 
 /**
  * @ORM\Entity (repositoryClass="Zantolov\BlogBundle\Repository\PostRepository")
@@ -20,7 +21,7 @@ class Post implements SluggableInterface
     use TimestampableEntity;
     use ActivableTrait;
     use SluggableTrait;
-
+    use ImageableTrait;
 
     /**
      * @ORM\Id

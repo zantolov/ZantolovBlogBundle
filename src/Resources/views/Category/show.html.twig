@@ -14,7 +14,11 @@
                 <td>{{ entity.name }}</td>
             </tr>
             <tr>
-                <th>Deletedat</th>
+                <th>Slug</th>
+                <td>{{ entity.slug }}</td>
+            </tr>
+            <tr>
+                <th>Deleted at</th>
                 <td>{{ entity.deletedAt|date(defaultDateTimeFormat) }}</td>
             </tr>
             <tr>
@@ -22,11 +26,11 @@
                 <td>{{ entity.active|fontAwesome() }}</td>
             </tr>
             <tr>
-                <th>Createdat</th>
+                <th>Created at</th>
                 <td>{{ entity.createdAt|date(defaultDateTimeFormat) }}</td>
             </tr>
             <tr>
-                <th>Updatedat</th>
+                <th>Updated at</th>
                 <td>{{ entity.updatedAt|date(defaultDateTimeFormat) }}</td>
             </tr>
             </tbody>

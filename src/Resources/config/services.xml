@@ -23,6 +23,10 @@
             <tag name="doctrine.event_listener" event="postFlush" method="postFlush"/>
         </service>
 
+        <service id="zantolov.blog.menu_builder" class="Zantolov\BlogBundle\Menu\MenuBuilder">
+            <argument type="service" id="knp_menu.factory"/>
+            <tag name="zantolov.app.menu"/>
+        </service>
 
     </services>
 

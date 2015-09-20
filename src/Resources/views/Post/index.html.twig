@@ -1,21 +1,30 @@
 {% extends 'ZantolovBlogBundle::baseAdmin.html.twig' %}
 
     {% block body -%}
+
+
+        {% embed 'ZantolovAppBundle:Admin/partials:crudHeader.html.twig'  with { ignoreTabs: ["filters"]} %}
+            {% block entityTitle %}
+                Posts
+            {% endblock %}
+            {% block actionPanel %}
+                {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.post."} %}
+            {% endblock %}
+        {% endembed %}
+
+
         <h1>Post list</h1>
 
-        {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.post."} %}
 
         <table class="table dataTable">
             <thead>
             <tr>
                 <th>Id</th>
                 <th>Title</th>
-                <th>Publishedat</th>
-                <th>Deletedat</th>
-                <th>Createdat</th>
-                <th>Updatedat</th>
+                <th>Published at</th>
                 <th>Active</th>
                 <th>Slug</th>
+                <th>Category</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -27,11 +36,9 @@
                     </td>
                     <td>{{ entity.title }}</td>
                     <td>{% if entity.publishedAt %}{{ entity.publishedAt|date(defaultDateTimeFormat) }}{% endif %}</td>
-                    <td>{% if entity.deletedAt %}{{ entity.deletedAt|date(defaultDateTimeFormat) }}{% endif %}</td>
-                    <td>{% if entity.createdAt %}{{ entity.createdAt|date(defaultDateTimeFormat) }}{% endif %}</td>
-                    <td>{% if entity.updatedAt %}{{ entity.updatedAt|date(defaultDateTimeFormat) }}{% endif %}</td>
                     <td>{{ entity.active|fontAwesome() }}</td>
                     <td>{{ entity.slug }}</td>
+                    <td>{{ entity.category.name }}</td>
                     <td>
                         <ul class="list-inline">
                             <li>

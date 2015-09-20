@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Zantolov\BlogBundle\Entity\Category;
+use Zantolov\MediaBundle\Form\EventSubscriber\ImagesChooserFieldAdderSubscriber;
 
 class PostType extends AbstractType
 {
@@ -23,6 +24,10 @@ class PostType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+        $imagesSubscriber = new ImagesChooserFieldAdderSubscriber('image', array('multiple' => false));
+        $builder->addEventSubscriber($imagesSubscriber);
+
         $builder
             ->add('title')
             ->add('slug', null, array('required' => false))
@@ -37,6 +42,8 @@ class PostType extends AbstractType
             ->add('keywords', null, array('required' => false))
             ->add('publishedAt', null, array('required' => false))
             ->add('active', null, array('required' => false));
+
+
     }
 
     /**
