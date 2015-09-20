@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Zantolov\AppBundle\Controller\EntityCrudController;
 use Zantolov\BlogBundle\Entity\Category;
 use Zantolov\BlogBundle\Form\CategoryType;
 
@@ -15,8 +16,17 @@ use Zantolov\BlogBundle\Form\CategoryType;
  *
  * @Route("/category")
  */
-class CategoryController extends Controller
+class CategoryController extends EntityCrudController
 {
+
+    /**
+     * @return string
+     */
+    protected function getEntityClass()
+    {
+        return 'ZantolovBlogBundle:Category';
+    }
+
 
     /**
      * Lists all Category entities.
@@ -25,15 +35,9 @@ class CategoryController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('ZantolovBlogBundle:Category')->findAll();
-
-        return array(
-            'entities' => $entities,
-        );
+        return parent::baseIndexAction($request);
     }
 
     /**
@@ -45,25 +49,7 @@ class CategoryController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = new Category();
-        $form = $this->createCreateForm($entity);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Category Created');
-
-
-
-            return $this->redirect($this->generateUrl('blog.admin.category.show', array('id' => $entity->getId())));
-        }
-
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+        return parent::baseCreateAction($request, new Category(), 'blog.admin.category.show');
     }
 
     /**
@@ -73,16 +59,11 @@ class CategoryController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Category $entity)
+    public function createCreateForm($entity)
     {
-        $form = $this->createForm(new CategoryType(), $entity, array(
-            'action' => $this->generateUrl('blog.admin.category.create'),
-            'method' => 'POST',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Create', 'attr' => array('class' => 'btn btn-success btn-lg')));
-
-        return $form;
+        return parent::createBaseCreateForm($entity, new CategoryType(),
+            $this->generateUrl('blog.admin.category.create')
+        );
     }
 
     /**
@@ -94,14 +75,9 @@ class CategoryController extends Controller
      */
     public function newAction()
     {
-        $entity = new Category();
-        $form   = $this->createCreateForm($entity);
-
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+        return parent::baseNewAction(new Category());
     }
+
 
     /**
      * Finds and displays a Category entity.
@@ -112,20 +88,7 @@ class CategoryController extends Controller
      */
     public function showAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ZantolovBlogBundle:Category')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Category entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
-        );
+        return $this->baseShowAction($id);
     }
 
     /**
@@ -137,42 +100,21 @@ class CategoryController extends Controller
      */
     public function editAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ZantolovBlogBundle:Category')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Category entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return parent::baseEditAction($id);
     }
 
     /**
-    * Creates a form to edit a Category entity.
-    *
-    * @param Category $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Category $entity)
+     * Creates a form to edit a Category entity.
+     *
+     * @param Category $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    public function createEditForm($entity)
     {
-        $form = $this->createForm(new CategoryType(), $entity, array(
-            'action' => $this->generateUrl('blog.admin.category.update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Update', 'attr' => array('class' => 'btn btn-success')));
-
-        return $form;
+        return parent::createBaseEditForm($entity, new CategoryType(), $this->generateUrl('blog.admin.category.update', array('id' => $entity->getId())));
     }
+
     /**
      * Edits an existing Category entity.
      *
@@ -182,32 +124,9 @@ class CategoryController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ZantolovBlogBundle:Category')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Category entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isValid()) {
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Category Updated');
-
-
-    return $this->redirect($this->generateUrl('blog.admin.category.edit', array('id' => $id)));
-        }
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return parent::baseUpdateAction($request, $id, $this->generateUrl('blog.admin.category.edit', array('id' => $id)));
     }
+
     /**
      * Deletes a Category entity.
      *
@@ -216,24 +135,7 @@ class CategoryController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('ZantolovBlogBundle:Category')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Category entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Category Deleted');
-
-    }
-
-        return $this->redirect($this->generateUrl('category'));
+        return parent::baseDeleteAction($request, $id, $this->generateUrl('blog.admin.category'));
     }
 
     /**
@@ -243,13 +145,8 @@ class CategoryController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
+    public function createDeleteForm($id)
     {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('blog.admin.category.delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete', 'attr' => array('class' => 'btn btn-danger')))
-            ->getForm()
-        ;
+        return parent::baseCreateDeleteForm($this->generateUrl('blog.admin.category.delete', array('id' => $id)));
     }
 }

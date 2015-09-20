@@ -1,18 +1,24 @@
 {% extends 'ZantolovBlogBundle::baseAdmin.html.twig' %}
 
     {% block body -%}
-        <h1>Category list</h1>
 
-        {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.category."} %}
+        {% embed 'ZantolovAppBundle:Admin/partials:crudHeader.html.twig'  with { ignoreTabs: ["filters"]} %}
+            {% block entityTitle %}
+                Category
+            {% endblock %}
+            {% block actionPanel %}
+                {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.category."} %}
+            {% endblock %}
+        {% endembed %}
 
         <table class="table dataTable">
             <thead>
             <tr>
-                <th>Id</th>
+                <th class="col-sm-1">#</th>
                 <th>Name</th>
                 <th>Parent</th>
                 <th>Active</th>
-                <th>Actions</th>
+                <th class="col-sm-1">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -25,25 +31,21 @@
                     <td>{% if entity.parent %}{{ entity.parent.name }}{% endif %}</td>
                     <td>{{ entity.active|fontAwesome() }}</td>
                     <td>
-                        <ul class="list-inline">
-                            <li>
-                                <a class="btn btn-primary"
-                                   href="{{ path('blog.admin.category.show', { 'id': entity.id }) }}">
-                                    show
-                                </a>
-                            </li>
-                            <li>
-                                <a class="btn btn-primary"
-                                   href="{{ path('blog.admin.category.edit', { 'id': entity.id }) }}">
-                                    edit
-                                </a>
-                            </li>
-                        </ul>
+
+                        <a class="btn btn-primary btn-sm"
+                           title="Show"
+                           href="{{ path('blog.admin.category.show', { 'id': entity.id }) }}">
+                            <i class="fa fa-search"></i>
+                        </a>
+                        <a class="btn btn-primary btn-sm"
+                           title="Edit"
+                           href="{{ path('blog.admin.category.edit', { 'id': entity.id }) }}">
+                            <i class="fa fa-edit"></i>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
 
-        {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.category."} %}
     {% endblock %}

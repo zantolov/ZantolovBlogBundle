@@ -1,12 +1,32 @@
 {% extends 'ZantolovBlogBundle::baseAdmin.html.twig' %}
 
     {% block body -%}
-        <h1>Category</h1>
+        {% embed 'ZantolovAppBundle:Admin/partials:crudHeader.html.twig'  with { ignoreTabs: ["filters"]} %}
+            {% block entityTitle %}
+                Category
+            {% endblock %}
+            {% block actionPanel %}
+                <ul class="list-inline">
+                    <li>
+                        <a class="btn btn-primary btn-sm" href="{{ path('blog.admin.category') }}">
+                            <i class="fa fa-arrow-left"></i> Back to the list
+                        </a>
+                    </li>
+                    <li>
+                        <a class="btn btn-primary btn-sm"
+                           href="{{ path('blog.admin.category.edit', { 'id': entity.id }) }}">
+                            <i class="fa fa-edit"></i> Edit
+                        </a>
+                    </li>
+                    <li>{{ form(delete_form) }}</li>
+                </ul>
+            {% endblock %}
+        {% endembed %}
 
         <table class="table">
             <tbody>
             <tr>
-                <th>Id</th>
+                <th class="col-sm-2">Id</th>
                 <td>{{ entity.id }}</td>
             </tr>
             <tr>
@@ -36,18 +56,4 @@
             </tbody>
         </table>
 
-        <ul class="list-inline">
-            <li>
-                <a class="btn btn-primary" href="{{ path('blog.admin.category') }}">
-                    <i class="fa fa-arrow-left"></i> Back to the list
-                </a>
-            </li>
-            <li>
-                <a class="btn btn-primary"
-                   href="{{ path('blog.admin.category.edit', { 'id': entity.id }) }}">
-                    <i class="fa fa-edit"></i> Edit
-                </a>
-            </li>
-            <li>{{ form(delete_form) }}</li>
-        </ul>
     {% endblock %}

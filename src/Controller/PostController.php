@@ -3,10 +3,10 @@
 namespace Zantolov\BlogBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Zantolov\AppBundle\Controller\EntityCrudController;
 use Zantolov\BlogBundle\Entity\Post;
 
 /**
@@ -14,8 +14,14 @@ use Zantolov\BlogBundle\Entity\Post;
  *
  * @Route("/post")
  */
-class PostController extends Controller
+class PostController extends EntityCrudController
 {
+
+    protected function getEntityClass()
+    {
+        return 'ZantolovBlogBundle:Post';
+    }
+
 
     /**
      * Lists all Post entities.
@@ -24,15 +30,9 @@ class PostController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('ZantolovBlogBundle:Post')->findAll();
-
-        return array(
-            'entities' => $entities,
-        );
+        return parent::baseIndexAction($request);
     }
 
     /**
@@ -44,25 +44,7 @@ class PostController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = new Post();
-        $form = $this->createCreateForm($entity);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Post Created');
-
-
-
-            return $this->redirect($this->generateUrl('blog.admin.post.show', array('id' => $entity->getId())));
-        }
-
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+        return parent::baseCreateAction($request, new Post(), 'blog.admin.post.show');
     }
 
     /**
@@ -72,17 +54,10 @@ class PostController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Post $entity)
+    public function createCreateForm($entity)
     {
         $postType = $this->get('zantolov_blog.post_type_factory')->make();
-        $form = $this->createForm($postType, $entity, array(
-            'action' => $this->generateUrl('blog.admin.post.create'),
-            'method' => 'POST',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Create', 'attr' => array('class' => 'btn btn-success btn-lg')));
-
-        return $form;
+        return parent::createBaseCreateForm($entity, $postType, $this->generateUrl('blog.admin.post.create'));
     }
 
     /**
@@ -94,13 +69,7 @@ class PostController extends Controller
      */
     public function newAction()
     {
-        $entity = new Post();
-        $form   = $this->createCreateForm($entity);
-
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+        return parent::baseNewAction(new Post());
     }
 
     /**
@@ -112,20 +81,7 @@ class PostController extends Controller
      */
     public function showAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ZantolovBlogBundle:Post')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Post entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
-        );
+        return parent::baseShowAction($id);
     }
 
     /**
@@ -137,43 +93,22 @@ class PostController extends Controller
      */
     public function editAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ZantolovBlogBundle:Post')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Post entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return parent::baseEditAction($id);
     }
 
     /**
-    * Creates a form to edit a Post entity.
-    *
-    * @param Post $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Post $entity)
+     * Creates a form to edit a Post entity.
+     *
+     * @param Post $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    public function createEditForm($entity)
     {
         $postType = $this->get('zantolov_blog.post_type_factory')->make();
-        $form = $this->createForm($postType, $entity, array(
-            'action' => $this->generateUrl('blog.admin.post.update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Update', 'attr' => array('class' => 'btn btn-success')));
-
-        return $form;
+        return parent::createBaseEditForm($entity, $postType, $this->generateUrl('blog.admin.post.update', array('id' => $entity->getId())));
     }
+
     /**
      * Edits an existing Post entity.
      *
@@ -183,32 +118,9 @@ class PostController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('ZantolovBlogBundle:Post')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Post entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isValid()) {
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Post Updated');
-
-
-    return $this->redirect($this->generateUrl('blog.admin.post.edit', array('id' => $id)));
-        }
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return parent::baseUpdateAction($request, $id, $this->generateUrl('blog.admin.post.edit', array('id' => $id)));
     }
+
     /**
      * Deletes a Post entity.
      *
@@ -217,24 +129,7 @@ class PostController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('ZantolovBlogBundle:Post')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Post entity.');
-            }
-
-            $em->remove($entity);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Post Deleted');
-
-    }
-
-        return $this->redirect($this->generateUrl('post'));
+        return parent::baseDeleteAction($request, $id, $this->generateUrl('blog.admin.post'));
     }
 
     /**
@@ -244,13 +139,8 @@ class PostController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
+    public function createDeleteForm($id)
     {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('blog.admin.post.delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete', 'attr' => array('class' => 'btn btn-danger')))
-            ->getForm()
-        ;
+        return parent::baseCreateDeleteForm($this->generateUrl('blog.admin.post.delete', array('id' => $id)));
     }
 }
