@@ -18,6 +18,11 @@
                         <i class="fa fa-arrow-left"></i> Back to the list
                     </a>
                 </li>
+                <li>
+                    <a class="btn btn-primary btn-sm" href="{{ path('blog.admin.post.show', {id:entity.id}) }}">
+                        <i class="fa fa-arrow-left"></i> Back to the post
+                    </a>
+                </li>
                 <li>{{ form(delete_form) }}</li>
             </ul>
         {% endblock %}

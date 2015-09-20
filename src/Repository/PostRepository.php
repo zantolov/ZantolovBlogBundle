@@ -97,6 +97,7 @@ class PostRepository extends EntityRepository
             ->where('p.active = 1')
             ->andWhere('p.publishedAt <= :now')
             ->setParameter('now', new \DateTime('now'))
+            ->andWhere('p.slug = :slug')->setParameter('slug', $slug)
             ->setMaxResults(1);
 
         return $query->getQuery()->getResult();
