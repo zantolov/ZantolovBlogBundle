@@ -27,6 +27,7 @@
             </ul>
         {% endblock %}
     {% endembed %}
-    {{ form(edit_form) }}
+
+    {% include 'ZantolovBlogBundle:Post:postForm.html.twig' with {postForm: edit_form} %}
 
 {% endblock %}

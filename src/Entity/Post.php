@@ -87,6 +87,12 @@ class Post implements SluggableInterface
     protected $category;
 
 
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean")
+     */
+    protected $isPage = false;
+
     public function getSluggableProperty()
     {
         return $this->getTitle();
@@ -211,5 +217,22 @@ class Post implements SluggableInterface
     {
         $this->category = $category;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isPage()
+    {
+        return $this->isPage;
+    }
+
+    /**
+     * @param boolean $isPage
+     */
+    public function setIsPage($isPage)
+    {
+        $this->isPage = $isPage;
+    }
+
 
 }

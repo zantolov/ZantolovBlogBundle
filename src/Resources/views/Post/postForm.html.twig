@@ -1,0 +1,75 @@
+<div>
+    {{ form_start(postForm) }}
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#content" role="tab" data-toggle="tab">
+                {% trans %}Content{% endtrans %}
+            </a>
+        </li>
+        <li role="presentation">
+            <a href="#media" role="tab" data-toggle="tab">
+                {% trans %}Media{% endtrans %}
+            </a>
+        </li>
+        <li role="presentation">
+            <a href="#meta" role="tab" data-toggle="tab">
+                {% trans %}Meta{% endtrans %}
+            </a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active " id="content">
+            {{ form_row(postForm.title) }}
+            {{ form_row(postForm.slug) }}
+            {{ form_row(postForm.title) }}
+            {{ form_row(postForm.intro) }}
+            {{ form_row(postForm.body) }}
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="media">
+            {{ form_row(postForm.image) }}
+        </div>
+        <div role="tabpanel" class="tab-pane" id="meta">
+            {{ form_row(postForm.isPage) }}
+            {{ form_row(postForm.active) }}
+            {{ form_row(postForm.category) }}
+            {{ form_row(postForm.keywords) }}
+            {{ form_row(postForm.author) }}
+            {{ form_row(postForm.publishedAt) }}
+
+        </div>
+    </div>
+
+</div>
+
+<div class="text-right">
+    {{ form_row(postForm.submit) }}
+</div>
+
+{{ form_end(postForm) }}
+
+<script>
+    var functions = window.functions || [];
+
+    functions.push(function () {
+
+        $("a[data-toggle=tab]").on('shown.bs.tab', function (e) {
+            var id = $(this).attr("href");
+            var selector = $(id + ' select.select2-hidden-accessible');
+            if (selector.length > 0) {
+                selector.select2('destroy');
+                selector.select2();
+            }
+        });
+
+        var hasErrors = $(".has-error");
+        if (hasErrors.length) {
+            var id = hasErrors.first().parent('.tab-pane').attr('id');
+            $('a[href="#' + id + '"]').tab('show')
+        }
+    });
+</script>

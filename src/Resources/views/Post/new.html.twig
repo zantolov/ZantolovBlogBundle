@@ -21,6 +21,7 @@
             </ul>
         {% endblock %}
     {% endembed %}
-    {{ form(form) }}
+
+    {% include 'ZantolovBlogBundle:Post:postForm.html.twig' with {postForm: form} %}
 
 {% endblock %}

@@ -35,7 +35,11 @@
                     <td>{% if entity.publishedAt %}{{ entity.publishedAt|date(defaultDateTimeFormat) }}{% endif %}</td>
                     <td>{{ entity.active|fontAwesome() }}</td>
                     <td>{{ entity.slug }}</td>
-                    <td>{{ entity.category.name }}</td>
+                    <td>
+                        {% if entity.category.name is defined and entity.category.name is not null %}
+                            {{ entity.category.name }}
+                        {% endif %}
+                    </td>
                     <td>
                         <a class="btn btn-primary btn-sm"
                            title="Show"

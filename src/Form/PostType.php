@@ -31,9 +31,11 @@ class PostType extends AbstractType
         $builder
             ->add('title')
             ->add('slug', null, array('required' => false))
-            ->add('intro', 'ckeditor', array('required' => false))
+            ->add('intro', 'textarea', array('required' => false))
             ->add('body', 'ckeditor')
             ->add('category', 'entity', array(
+                'required'      => false,
+                'empty_value'   => '-- None --',
                 'class'         => Category::class,
                 'query_builder' => $this->categoriesQueryBuilder,
                 'property'      => 'name'
@@ -41,7 +43,8 @@ class PostType extends AbstractType
             ->add('author', null, array('required' => false))
             ->add('keywords', null, array('required' => false))
             ->add('publishedAt', null, array('required' => false))
-            ->add('active', null, array('required' => false));
+            ->add('active', null, array('required' => false))
+            ->add('isPage', null, array('required' => false));
 
 
     }
