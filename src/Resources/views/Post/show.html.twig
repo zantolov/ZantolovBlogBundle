@@ -5,7 +5,7 @@
         {% embed 'ZantolovAppBundle:Admin/partials:crudHeader.html.twig'  with { ignoreTabs: ["filters"]} %}
 
             {% block entityTitle %}
-                Category
+                Post
             {% endblock %}
 
             {% block actionPanel %}
@@ -75,11 +75,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="well">
-                    <strong>Intro</strong>
+                    <strong>Intro</strong><br/>
                     {{ entity.intro|raw }}
                 </div>
                 <div class="well">
-                    <strong>Body</strong>
+                    <strong>Body</strong><br/>
                     {{ entity.body|raw }}
                 </div>
             </div>
