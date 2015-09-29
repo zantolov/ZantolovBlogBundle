@@ -3,12 +3,33 @@
     {% block body -%}
 
 
-        {% embed 'ZantolovAppBundle:Admin/partials:crudHeader.html.twig'  with { ignoreTabs: ["filters"]} %}
+        {% embed 'ZantolovAppBundle:Admin/partials:crudHeader.html.twig'  with { ignoreTabs: [""]} %}
             {% block entityTitle %}
                 Posts
             {% endblock %}
             {% block actionPanel %}
                 {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.post."} %}
+            {% endblock %}
+            {% block filterPanel %}
+                <form>
+                    <ul class="list-inline list-unstyled">
+                        <li>
+                            <select class="form-control" name="filters[category]">
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </li>
+                        <li>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-filter"></i> {% trans %}Filter{% endtrans %}
+                            </button>
+                            <a href="{{ path('blog.admin.post') }}" class="btn btn-default">
+                                {% trans %}Reset filters{% endtrans %}</a>
+                        </li>
+                    </ul>
+                </form>
+
             {% endblock %}
         {% endembed %}
 

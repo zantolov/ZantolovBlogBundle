@@ -17,6 +17,8 @@ use Zantolov\BlogBundle\Entity\Post;
 class PostController extends EntityCrudController
 {
 
+    protected $enabledFilters = array('category');
+
     protected function getEntityClass()
     {
         return 'ZantolovBlogBundle:Post';
@@ -32,7 +34,8 @@ class PostController extends EntityCrudController
      */
     public function indexAction(Request $request)
     {
-        return parent::baseIndexAction($request);
+        $categories = $this->getDoctrine()->getManager()->getRepository('ZantolovBlogBundle:Category')->findAll();
+        return array_merge(parent::baseIndexAction($request, $this->processFilters()), compact('categories'));
     }
 
     /**
