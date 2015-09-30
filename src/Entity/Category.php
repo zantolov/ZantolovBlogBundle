@@ -2,6 +2,7 @@
 
 namespace Zantolov\BlogBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Zantolov\AppBundle\Entity\Interfaces\SluggableInterface;
 use Zantolov\AppBundle\Entity\Traits\ActivableTrait;
@@ -11,7 +12,7 @@ use Zantolov\AppBundle\Entity\Traits\SluggableTrait;
 
 /**
  * @ORM\Entity (repositoryClass="Zantolov\BlogBundle\Repository\CategoryRepository")
- * @ORM\Table(name="categories")
+ * @ORM\Table(name="post_categories")
  * @ORM\HasLifecycleCallbacks
  */
 class Category implements SluggableInterface
@@ -46,6 +47,17 @@ class Category implements SluggableInterface
      */
     private $children;
 
+    /**
+     * @var ArrayCollection $posts
+     * @ORM\ManyToMany(targetEntity="Post", mappedBy="categories")
+     **/
+    private $posts;
+
+
+    public function __construct()
+    {
+        $this->posts = new ArrayCollection();
+    }
 
     public function getSluggableProperty()
     {
@@ -123,6 +135,42 @@ class Category implements SluggableInterface
     public function setChildren($children)
     {
         $this->children = $children;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPosts()
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param mixed $post
+     */
+    public function addPost($post)
+    {
+        /** @var Post $post */
+        if ($this->getPosts()->contains($post)) {
+            return;
+        }
+
+        $this->getPosts()->add($post);
+        $post->addCategory($this);
+    }
+
+    /**
+     * @param mixed $post
+     */
+    public function removePost($post)
+    {
+        /** @var Post $post */
+        if (!$this->getPosts()->contains($post)) {
+            return;
+        }
+
+        $this->getPosts()->removeElement($post);
+        $post->removeCategory($this);
     }
 
 }

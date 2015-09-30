@@ -18,7 +18,9 @@ class PostRepository extends EntityRepository
     {
         $query = $this->getEntityManager()->getRepository(Post::class)
             ->createQueryBuilder('p')
-            ->where('p.active = 1');
+            ->where('p.active = 1')
+            ->andWhere('p.isPage = 0')
+        ;
 
 
         if (isset($options['publishedOnly']) && $options['publishedOnly'] === true) {
@@ -68,8 +70,8 @@ class PostRepository extends EntityRepository
     {
         $query = $this->getActivePostsQueryBuilder($options);
 
-        $query->andWhere('p.category = :category')
-            ->setParameter('category', $category);
+        $query->innerJoin('p.categories', 'c')->andWhere('c.id= :category')
+            ->setParameter('category', $category->getId());
 
         return $query;
     }

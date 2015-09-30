@@ -4,8 +4,10 @@ namespace Zantolov\BlogBundle\Form;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Zantolov\AppBundle\Form\Type\DatetimePickerType;
 use Zantolov\BlogBundle\Entity\Category;
 use Zantolov\MediaBundle\Form\EventSubscriber\ImagesChooserFieldAdderSubscriber;
 
@@ -33,21 +35,29 @@ class PostType extends AbstractType
             ->add('slug', null, array('required' => false))
             ->add('intro', 'textarea', array('required' => false))
             ->add('body', 'ckeditor')
-            ->add('category', 'entity', array(
+            ->add('categories', 'entity', array(
                 'required'      => false,
-                'empty_value'   => '-- None --',
-                'class'         => Category::class,
+                'multiple'      => true,
+                'class'         => 'ZantolovBlogBundle:Category',
                 'query_builder' => $this->categoriesQueryBuilder,
-                'property'      => 'name'
             ))
             ->add('author', null, array('required' => false))
             ->add('keywords', null, array('required' => false))
-            ->add('publishedAt', null, array('required' => false))
+            ->add('publishedAt', new DatetimePickerType())
             ->add('active', null, array('required' => false))
             ->add('isPage', null, array('required' => false));
 
+        $builder->get('publishedAt')->addModelTransformer(new CallbackTransformer(
+            function (\Datetime $dateTime) {
+                return $dateTime->format('d.m.Y. H:i');
+            },
+            function ($datetimeText) {
+                return \DateTime::createFromFormat('d.m.Y. H:i', $datetimeText);
+            }
+        ));
 
     }
+
 
     /**
      * @param OptionsResolverInterface $resolver

@@ -2,6 +2,7 @@
 
 namespace Zantolov\BlogBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
@@ -42,7 +43,7 @@ class Post implements SluggableInterface
     /**
      * @var string
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $intro = null;
 
@@ -78,13 +79,11 @@ class Post implements SluggableInterface
      */
     private $publishedAt;
 
-
     /**
-     * @var Category $category
-     * @ORM\ManyToOne(targetEntity="Category")
-     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     * @ORM\ManyToMany(targetEntity="Category", inversedBy="posts")
+     * @ORM\JoinTable(name="posts_categories")
      **/
-    protected $category;
+    protected $categories;
 
 
     /**
@@ -92,6 +91,13 @@ class Post implements SluggableInterface
      * @ORM\Column(type="boolean")
      */
     protected $isPage = false;
+
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
+
 
     public function getSluggableProperty()
     {
@@ -203,22 +209,6 @@ class Post implements SluggableInterface
     }
 
     /**
-     * @return Category
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param Category $category
-     */
-    public function setCategory($category)
-    {
-        $this->category = $category;
-    }
-
-    /**
      * @return boolean
      */
     public function isPage()
@@ -234,5 +224,33 @@ class Post implements SluggableInterface
         $this->isPage = $isPage;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param ArrayCollection $categories
+     */
+    public function addCategory($category)
+    {
+        $this->getCategories()->add($category);
+    }
+
+    /**
+     * @param ArrayCollection $categories
+     */
+    public function removeCategory($category)
+    {
+        $this->getCategories()->removeElement($category);
+    }
+
+    public function __toString()
+    {
+        return $this->title;
+    }
 
 }

@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Zantolov\AppBundle\Controller\EntityCrudController;
+use Zantolov\BlogBundle\Entity\Category;
 use Zantolov\BlogBundle\Entity\Post;
 
 /**
@@ -35,7 +36,16 @@ class PostController extends EntityCrudController
     public function indexAction(Request $request)
     {
         $categories = $this->getDoctrine()->getManager()->getRepository('ZantolovBlogBundle:Category')->findAll();
-        return array_merge(parent::baseIndexAction($request, $this->processFilters()), compact('categories'));
+
+        $filters = $this->processFilters();
+        if (empty($filters) || !isset($filters['category'])) {
+            return array_merge(parent::baseIndexAction($request), compact('categories'));
+        } else {
+            /** @var Category $category */
+            $category = $this->getDoctrine()->getManager()->getRepository('ZantolovBlogBundle:Category')->find($filters['category']);
+            $entities = $category->getPosts();
+            return compact('entities', 'categories', 'filters');
+        }
     }
 
     /**

@@ -16,7 +16,7 @@
                         <li>
                             <select class="form-control" name="filters[category]">
                                 {% for category in categories %}
-                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    <option {{ (filters.category is defined ? (filters.category == category.id ? 'selected="selected': '') : '') }}value="{{ category.id }}">{{ category.name }}</option>
                                 {% endfor %}
                             </select>
                         </li>
@@ -42,7 +42,7 @@
                 <th class="col-sm-2">Published at</th>
                 <th>Active</th>
                 <th>Slug</th>
-                <th>Category</th>
+                <th>Categories</th>
                 <th class="col-sm-1">Actions</th>
             </tr>
             </thead>
@@ -57,8 +57,10 @@
                     <td>{{ entity.active|fontAwesome() }}</td>
                     <td>{{ entity.slug }}</td>
                     <td>
-                        {% if entity.category.name is defined and entity.category.name is not null %}
-                            {{ entity.category.name }}
+                        {% if entity.categories is defined and entity.categories|length > 0 %}
+                            {% for category in entity.categories %}
+                                <span class="badge">{{ category.name }}</span>
+                            {% endfor %}
                         {% endif %}
                     </td>
                     <td>
