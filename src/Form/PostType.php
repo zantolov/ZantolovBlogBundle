@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Zantolov\AppBundle\Form\Type\DatetimePickerType;
 use Zantolov\BlogBundle\Entity\Category;
 use Zantolov\MediaBundle\Form\EventSubscriber\ImagesChooserFieldAdderSubscriber;
@@ -27,14 +28,19 @@ class PostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $imagesSubscriber = new ImagesChooserFieldAdderSubscriber('image', array('multiple' => false));
+        $imagesSubscriber = new ImagesChooserFieldAdderSubscriber('image', array('label' => 'Image', 'multiple' => false));
         $builder->addEventSubscriber($imagesSubscriber);
 
         $builder
             ->add('title')
             ->add('slug', null, array('required' => false))
             ->add('intro', 'textarea', array('required' => false))
-            ->add('body', 'ckeditor')
+            ->add('body', 'ckeditor', array(
+                'config' => array(
+                    'filebrowserBrowseRoute'      => 'zantolov.media.document.popup.browse.ckeditor',
+                    'filebrowserImageBrowseRoute' => 'zantolov.media.image.popup.browse.ckeditor',
+                )
+            ))
             ->add('categories', 'entity', array(
                 'required'      => false,
                 'multiple'      => true,
