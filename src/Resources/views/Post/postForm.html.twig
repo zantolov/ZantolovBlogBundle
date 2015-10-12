@@ -13,41 +13,63 @@
                 {% trans %}Media{% endtrans %}
             </a>
         </li>
-        <li role="presentation">
-            <a href="#meta" role="tab" data-toggle="tab">
-                {% trans %}Meta{% endtrans %}
-            </a>
-        </li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active " id="content">
-            {{ form_row(postForm.title) }}
-            {{ form_row(postForm.slug) }}
-            {{ form_row(postForm.title) }}
-            {{ form_row(postForm.intro) }}
-            {{ form_row(postForm.body) }}
+            <div class="row">
 
+                <div class="col-md-9">
+                    {{ form_row(postForm.intro) }}
+                    {{ form_row(postForm.body) }}
+                </div>
+
+                <div class="col-md-3">
+                    {{ form_row(postForm.title) }}
+
+                    <div class="hasTooltip"
+                         data-toggle="tooltip"
+                         data-placement="left"
+                         title="Slug is unique relative URI to access post. It should be permanent.">
+                        {{ form_row(postForm.slug) }}
+                    </div>
+
+                    <div class="hasTooltip"
+                         data-toggle="tooltip"
+                         data-placement="left"
+                         title="Pages aren't listed in posts listview and they can be accessed directly through slug.">
+                        {{ form_row(postForm.isPage) }}
+                    </div>
+
+                    {{ form_row(postForm.active) }}
+                    {{ form_row(postForm.categories) }}
+                    {{ form_row(postForm.keywords) }}
+                    {{ form_row(postForm.author) }}
+
+                    <div class="hasTooltip"
+                         data-toggle="tooltip"
+                         data-placement="left"
+                         title="Posts are available only when published.">
+                        {{ form_row(postForm.publishedAt) }}
+                    </div>
+                    {{ form_row(postForm.submit) }}
+
+                </div>
+
+            </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="media">
-            {{ form_row(postForm.image) }}
-        </div>
-        <div role="tabpanel" class="tab-pane" id="meta">
-            {{ form_row(postForm.isPage) }}
-            {{ form_row(postForm.active) }}
-            {{ form_row(postForm.categories) }}
-            {{ form_row(postForm.keywords) }}
-            {{ form_row(postForm.author) }}
-            {{ form_row(postForm.publishedAt) }}
 
+            {{ form_label(postForm.image) }}
+            {{ form_errors(postForm.image) }}
+            <p class="help-block">
+                Select one leading image for this post
+            </p>
+            {{ form_widget(postForm.image) }}
         </div>
     </div>
 
-</div>
-
-<div class="text-right">
-    {{ form_row(postForm.submit) }}
 </div>
 
 {{ form_end(postForm) }}

@@ -14,7 +14,8 @@
                 <form>
                     <ul class="list-inline list-unstyled">
                         <li>
-                            <select class="form-control" name="filters[category]">
+                            <label for="filters[category]">Category</label>
+                            <select class="form-control onChangeSubmit" name="filters[category]">
                                 {% for category in categories %}
                                     <option {{ (filters.category is defined ? (filters.category == category.id ? 'selected="selected': '') : '') }}value="{{ category.id }}">{{ category.name }}</option>
                                 {% endfor %}

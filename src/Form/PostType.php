@@ -54,8 +54,14 @@ class PostType extends AbstractType
             ->add('isPage', null, array('required' => false));
 
         $builder->get('publishedAt')->addModelTransformer(new CallbackTransformer(
-            function (\Datetime $dateTime) {
-                return $dateTime->format('d.m.Y. H:i');
+            function ($dateTime) {
+                if(empty($dateTime)){
+                    $dateTime = new \DateTime();
+                }
+
+                if ($dateTime instanceof \Datetime) {
+                    return $dateTime->format('d.m.Y. H:i');
+                }
             },
             function ($datetimeText) {
                 return \DateTime::createFromFormat('d.m.Y. H:i', $datetimeText);
