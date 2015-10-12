@@ -105,4 +105,43 @@ class PostRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+
+    /**
+     * @param $ids
+     * @param bool|false $deactivate
+     * @return \Doctrine\ORM\Query
+     */
+    public function massFieldUpdate($ids, $field, $value)
+    {
+        $q = $this->getEntityManager()
+            ->getRepository(Post::class)
+            ->createQueryBuilder('p')->update()
+            ->set('p.' . $field, ':value')
+            ->setParameter('value', $value)
+            ->where('p.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery();
+
+        $p = $q->execute();
+        return $p;
+    }
+
+    /**
+     * @param $ids
+     * @param bool|false $deactivate
+     * @return \Doctrine\ORM\Query
+     */
+    public function massDelete($ids)
+    {
+        $q = $this->getEntityManager()
+            ->getRepository(Post::class)
+            ->createQueryBuilder('p')->delete()
+            ->where('p.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery();
+
+        $p = $q->execute();
+        return $p;
+    }
+
 }

@@ -156,4 +156,13 @@ class PostController extends EntityCrudController
     {
         return parent::baseCreateDeleteForm($this->generateUrl('blog.admin.post.delete', array('id' => $id)));
     }
+
+    /**
+     * @Route("/massAction", name="blog.admin.post.massAction")
+     */
+    public function massAction(Request $request)
+    {
+        return parent::baseMassAction($request);
+    }
+
 }

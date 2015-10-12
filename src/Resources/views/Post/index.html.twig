@@ -8,7 +8,41 @@
                 Posts
             {% endblock %}
             {% block actionPanel %}
-                {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.post."} %}
+                <ul class="list-inline list-unstyled">
+                    {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {
+                    noUlElement: true,
+                    entityPrefix: "blog.admin.post."} %}
+                    <li>
+                        <a href="javascript:void(0);" class="selectVisible btn btn-default btn-sm">
+                            <i class="fa fa-check-square-o"></i>
+                            {% trans %}Select{% endtrans %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="deselectSelection btn btn-default btn-sm">
+                            <i class="fa fa-square-o"></i>
+                            {% trans %}Deselect{% endtrans %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="activateSelectedBtn btn btn-default btn-sm">
+                            <i class="fa fa-plus"></i>
+                            {% trans %}Activate{% endtrans %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="deactivateSelectedBtn btn btn-default btn-sm">
+                            <i class="fa fa-times"></i>
+                            {% trans %}Deactivate{% endtrans %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" data-confirm="Are you sure?" class="deleteSelectedBtn btn btn-default btn-sm">
+                            <i class="fa fa-trash"></i>
+                            {% trans %}Delete{% endtrans %}
+                        </a>
+                    </li>
+                </ul>
             {% endblock %}
             {% block filterPanel %}
                 <form>
@@ -38,6 +72,7 @@
         <table class="table dataTable table-hover">
             <thead>
             <tr>
+                <th></th>
                 <th>Id</th>
                 <th>Title</th>
                 <th class="col-sm-2">Published at</th>
@@ -50,6 +85,12 @@
             <tbody>
             {% for entity in entities %}
                 <tr>
+                    <td>
+                        <input autocomplete="off"
+                               class="selectCheckbox"
+                               type="checkbox"
+                               value="{{ entity.id }}">
+                    </td>
                     <td>
                         <a href="{{ path('blog.admin.post.show', { 'id': entity.id }) }}">{{ entity.id }}</a>
                     </td>
@@ -80,4 +121,24 @@
             {% endfor %}
             </tbody>
         </table>
+        <script>
+            function doMass(action) {
+                var selected = $(".selectCheckbox").map(function () {
+                    if ($(this).is(":checked")) {
+                        return $(this).val()
+                    }
+                }).get();
+
+                $.ajax({
+                    method: "POST",
+                    url: "{{ path("blog.admin.post.massAction") }}",
+                    dataType: "JSON",
+                    data: {ids: selected, action: action}
+                }).done(function (msg) {
+                    if (msg.status > 0) {
+                        window.location.reload();
+                    }
+                });
+            }
+        </script>
     {% endblock %}
