@@ -1,51 +1,43 @@
-{% extends 'ZantolovBlogBundle::baseAdmin.html.twig' %}
+{% extends '::app.html.twig' %}
 
     {% block body -%}
+        <div class="col-md-12">
 
-        {% embed 'ZantolovAppBundle:Admin/partials:crudHeader.html.twig'  with { ignoreTabs: ["filters"]} %}
-            {% block entityTitle %}
-                Category
-            {% endblock %}
-            {% block actionPanel %}
-                {% include 'ZantolovAppBundle:SensioGeneratorBundle:partials/CRUD/indexLinks.html.twig' with {entityPrefix: "blog.admin.category."} %}
-            {% endblock %}
-        {% endembed %}
+            {% embed 'ZantolovAppBundle:CRUD/Template:crud-navigation-bar.html.twig' with {
+            routePrefix: crudId,
+            ignoreLinks: ['list']
+            } %}{% endembed %}
 
-        <table class="table dataTable">
-            <thead>
-            <tr>
-                <th class="col-sm-1">#</th>
-                <th>Name</th>
-                <th>Parent</th>
-                <th>Active</th>
-                <th class="col-sm-1">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for entity in entities %}
-                <tr>
-                    <td>
-                        <a href="{{ path('blog.admin.category.show', { 'id': entity.id }) }}">{{ entity.id }}</a>
-                    </td>
-                    <td>{{ entity.name }}</td>
-                    <td>{% if entity.parent %}{{ entity.parent.name }}{% endif %}</td>
-                    <td>{{ entity.active|fontAwesome() }}</td>
-                    <td>
+            {% embed 'ZantolovAppBundle:CRUD/Template:datatable.html.twig' %}
+                {% block thead %}
+                    <tr>
+                        <th class="col-sm-1">#</th>
+                        <th>Name</th>
+                        <th>Parent</th>
+                        <th>Active</th>
+                        <th class="col-sm-2"></th>
+                    </tr>
+                {% endblock thead %}
 
-                        <a class="btn btn-primary btn-sm"
-                           title="Show"
-                           href="{{ path('blog.admin.category.show', { 'id': entity.id }) }}">
-                            <i class="fa fa-search"></i>
-                        </a>
-                        <a class="btn btn-primary btn-sm"
-                           title="Edit"
-                           href="{{ path('blog.admin.category.edit', { 'id': entity.id }) }}">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                {% block item %}
+                    {% trans_default_domain "ZantolovApp" %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('blog.categories.show', { 'id': item.id }) }}">{{ item.id }}</a>
+                        </td>
+                        <td>{{ item.name }}</td>
+                        <td>{% if item.parent %}{{ item.parent.name }}{% endif %}</td>
+                        <td>{{ item.active|fontAwesome() }}</td>
+                        <td class="text-right">
+                            {% include 'ZantolovAppBundle:CRUD/Template:datatable-item-actions.html.twig' with {
+                            crudId: crudId,
+                            showLabels: true
+                            } %}
+                        </td>
+                    </tr>
+                {% endblock item %}
+
+            {% endembed %}
+        </div>
 
     {% endblock %}

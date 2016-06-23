@@ -1,33 +1,17 @@
-{% extends 'ZantolovBlogBundle::baseAdmin.html.twig' %}
+{% extends '::app.html.twig' %}
 
-{% block body -%}
-    {% embed 'ZantolovAppBundle:Admin/partials:crudHeader.html.twig'  with { ignoreTabs: ["filters"]} %}
-        {% block entityTitle %}
-            Post Edit
-        {% endblock %}
-        {% block actionPanel %}
-            <ul class="list-inline">
-                <li>
-                    <a onclick="$('#zantolov_blogbundle_post_submit').click();" href="javascript:void(0)"
-                       class="btn btn-success btn-sm">
-                        <i class="fa fa-check"></i> Update
-                    </a>
-                </li>
-                <li>
-                    <a class="btn btn-primary btn-sm" href="{{ path('blog.admin.post') }}">
-                        <i class="fa fa-arrow-left"></i> Back to the list
-                    </a>
-                </li>
-                <li>
-                    <a class="btn btn-primary btn-sm" href="{{ path('blog.admin.post.show', {id:entity.id}) }}">
-                        <i class="fa fa-arrow-left"></i> Back to the post
-                    </a>
-                </li>
-                <li>{{ form(delete_form) }}</li>
-            </ul>
-        {% endblock %}
-    {% endembed %}
+    {% block body -%}
 
-    {% include 'ZantolovBlogBundle:Post:postForm.html.twig' with {postForm: edit_form} %}
+        <div class="col-md-12">
+            {% embed 'ZantolovAppBundle:CRUD/Template:crud-navigation-bar.html.twig' with {
+            id: id,
+            routePrefix: crudId,
+            ignoreLinks: ['edit']
+            } %}{% endembed %}
 
-{% endblock %}
+
+            {% include 'ZantolovBlogBundle:Post:postForm.html.twig' with {postForm: form} %}
+
+        </div>
+    {% endblock %}
+

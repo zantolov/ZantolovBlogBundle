@@ -2,6 +2,7 @@
 
 namespace Zantolov\BlogBundle\Form\Factory;
 
+use Zantolov\BlogBundle\Form\PostType;
 use Zantolov\BlogBundle\Repository\CategoryRepository;
 
 class PostTypeFactory
@@ -25,7 +26,7 @@ class PostTypeFactory
     public function make($options = array())
     {
         $categoriesQueryBuilder = $this->categoryRepository->getActiveCategoriesQueryBuilder();
-        $postType = new \Zantolov\BlogBundle\Form\PostType($categoriesQueryBuilder);
+        $postType = new PostType($categoriesQueryBuilder);
         return $postType;
     }
 

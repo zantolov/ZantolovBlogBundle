@@ -1,0 +1,7 @@
+crud_categories:
+    resource: "@ZantolovBlogBundle/Resources/config/routing/categories.php"
+    prefix:   /categories
+
+crud_posts:
+    resource: "@ZantolovBlogBundle/Resources/config/routing/posts.php"
+    prefix:   /posts

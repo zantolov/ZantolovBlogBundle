@@ -28,8 +28,8 @@ class MenuBuilder implements MenuBuilderInterface
             ->setAttribute('dropdown', true)
             ->setAttribute('icon', 'fa fa-list');
 
-        $menuItems['content']->addChild('Posts', array('route' => 'blog.admin.post'))->setAttribute('icon', 'fa fa-file');
-        $menuItems['content']->addChild('Categories', array('route' => 'blog.admin.category'))->setAttribute('icon', 'fa fa-folder');
+        $menuItems['content']->addChild('Posts', array('route' => 'blog.posts.index'))->setAttribute('icon', 'fa fa-file');
+        $menuItems['content']->addChild('Categories', array('route' => 'blog.categories.index'))->setAttribute('icon', 'fa fa-folder');
 
         return $menuItems;
     }
