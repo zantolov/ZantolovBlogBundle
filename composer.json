@@ -7,7 +7,7 @@
     }
   ],
   "require": {
-    "zantolov/appbundle": "^1",
+    "zantolov/appbundle": "~1",
     "knplabs/knp-paginator-bundle": "^2.4",
     "egeloen/ckeditor-bundle": "~2.0",
     "liip/imagine-bundle": "^1.3"
